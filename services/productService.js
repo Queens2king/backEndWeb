@@ -1,3 +1,4 @@
+const db = require('../models/index');
 const { Product } = require('../models/index');
 
 exports.getProducts = async function (req) {
@@ -20,3 +21,16 @@ exports.getProducts = async function (req) {
 
 	return null;	
 };
+
+exports.getFirstListProduct = async function (req) {
+	try{
+		const firstListProduct = await db.sequelize.query(`Select* from product`,{
+			type: db.sequelize.QueryTypes.SELECT
+		});
+		return firstListProduct;
+	} catch (err){
+		console.log(err);
+		return err;
+	}
+	return null;
+}

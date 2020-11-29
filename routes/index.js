@@ -19,4 +19,7 @@ router.get('/dashboard', (req, res, next) => {
   res.render('dashboard', { title: 'Admin dashboard' });
 });
 
+router.get('/',productController.getFirstListProduct);
+
+router.post('/products', productController.postProduct);
 module.exports = router;
