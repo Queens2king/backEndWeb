@@ -1,5 +1,5 @@
 const bcrypt = require('bcrypt');
-const { user } = require('../models/index');
+const {User} = require('../models/index');
 
 exports.checkUserCredentials = async function (data) {
   const candidateUser = await user.findOne({
@@ -18,3 +18,17 @@ exports.checkUserCredentials = async function (data) {
 
   return candidateUser;
 };
+
+exports.getUserById = async(req) => {
+  try{
+    const userData = await User.findOne({
+      where: {
+        user_id: req.params.userId
+      }
+    });
+    return userData.dataValues;
+  } catch (err){
+    console.log(err);
+    return null;
+  }
+}

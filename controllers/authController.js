@@ -1,6 +1,8 @@
 const db = require('../models/index');
 const product = db['Product'];
 
+const authService = require('../services/authService');
+
 exports.login = async (req, res, next) => {
   try{
     const newProduct =  await product.create({
@@ -25,3 +27,8 @@ exports.login = async (req, res, next) => {
   }
   
 };
+
+exports.register = async(req,res) => {
+  const registerResult = await authService.register(req);
+  return res.json(registerResult);
+}

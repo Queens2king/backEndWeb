@@ -3,6 +3,7 @@ const express = require('express');
 const authController = require('../controllers/authController');
 const authValidator = require('../validator/auth');
 const productController = require('../controllers/productController');
+const userController =  require('../controllers/userController');
 
 const router = express.Router();
 
@@ -20,6 +21,10 @@ router.get('/dashboard', (req, res, next) => {
 });
 
 router.get('/',productController.getFirstListProduct);
+router.get('/profile/:userId',userController.getUserById);
+
 
 router.post('/products', productController.postProduct);
+router.post('/register', authController.register);
+
 module.exports = router;
