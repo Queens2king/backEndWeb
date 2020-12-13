@@ -2,6 +2,18 @@ const userService = require('../services/userService');
 
 
 exports.getUserById = async(req,res) => {
-    const user = await userService.getUserById(req);
-    res.json(user);
+    if (res.locals.user)
+        return res.json({
+            message: 'Success',
+            user: {...res.locals.user}
+        })
+    return res.json({
+        message: 'Failed',
+        user: null
+    });
+}
+
+exports.updateProfile = async(req,res) => {
+    const updatedUser = await userService.updateProfile(req,res);
+    res.json(updatedUser);
 }
