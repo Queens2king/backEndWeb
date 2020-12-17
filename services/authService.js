@@ -42,26 +42,6 @@ exports.register = async(req) => {
         result.message = 'Failed';
         return result;
     }
-
-    // try{
-    //     const newUser = await User.create({
-    //         ...req.body,
-    //         password: password,
-    //         avatar: avatar,
-    //         createdAt: moment(),
-    //         updatedAt: moment()
-    //     });
-    //     // const payload = { email: newUser.dataValues.email, user_id: newUser.dataValues.user_id };
-    //     const jwtToken = jwt.sign(payload, jwtSecret);
-    //     result.message = 'Success'
-    //     result.token = jwtToken;
-    //     return result;
-    // } catch(err){
-    //     console.log(err);
-    //     result.message = "Failed to create user";
-    //     return result;
-    // }
-    // return null;
 }
 
 exports.login = async(req) => {
@@ -108,10 +88,13 @@ exports.authRegister = async(req) => {
     let avatar = null;
     if (req.body.avatar === undefined)
         avatar = "/images/avatars/avatar.png";
+    if (req.body.name === undefined)
+        name = data.email.split('@')[0];
     try{
         const newUser = await User.create({
             ...data,
             avatar: avatar,
+            name: name,
             createdAt: moment(),
             updatedAt: moment()
         });

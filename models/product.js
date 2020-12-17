@@ -11,6 +11,7 @@ module.exports = (sequelize,DataTypes) => {
      static associate(models) {
       // define association here
         this.belongsTo(models.Category,{ foreignKey: 'category_id'});
+        this.belongsTo(models.Shop,{ foreignKey: 'shop_id'});
     }
   }
   Product.init(
@@ -38,7 +39,10 @@ module.exports = (sequelize,DataTypes) => {
       },
       quantityInStock: {
         type: Sequelize.DataTypes.BIGINT,
-      }
+      },
+      createdAt: DataTypes.DATE,
+      updatedAt: DataTypes.DATE,
+      nosale: DataTypes.BIGINT
     },
     {
       sequelize,

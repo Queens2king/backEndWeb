@@ -22,6 +22,9 @@ const app = express();
 // use cors for api
 app.use(cors());
 
+// serve public file
+app.use(express.static('public'));
+
 // store logs
 const accessLogStream = rfs.createStream(generator.logFileGenerator(), {
   interval: '1d', // rotate daily

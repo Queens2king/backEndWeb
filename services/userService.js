@@ -59,11 +59,19 @@ exports.updateProfile = async function(req,res){
     message:'',
     user:{}
   }
-
+  const data = {...req.body};
+  for(element in data){
+    console.log(data[element]);
+  }
+  for(element in data){
+    if (data[element] == "" || data[element] == "null" || data[element] == undefined || data[element] == null || data[element] == 'undefined')
+      delete data[element];
+  }
+  console.log(data);
   try{
     const updatedUser = await User.update(
       {
-        name: req.body.name
+        ...data
       },
       {
         returning: true,
