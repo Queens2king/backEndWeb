@@ -25,7 +25,22 @@ exports.getProductByCategoryId = async (req, res) =>{
 	return res.json(productByCategoryId);
 }
 
+exports.getProductByShopId = async (req, res) => {
+	const productByShopId = await productService.getProductByShopId(req);
+	return res.json(productByShopId);
+}
+
 exports.addProduct = async(req, res) => {
 	const newproduct = await productService.addProduct(req,res);
 	return res.json(newproduct);
+}
+
+exports.changeInfoProduct = async (req, res) => {
+	const product = await productService.changeInfoProduct(req,res);
+	return res.json(product);
+}
+
+exports.getInfoShopByProductId = async(req,res) =>{
+	const shop = await productService.getInfoShopByProductId(req);
+	return res.json(shop);
 }

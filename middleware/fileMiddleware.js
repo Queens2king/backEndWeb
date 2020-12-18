@@ -21,7 +21,6 @@ exports.uploadFile = function(req,res,next) {
 }
 
 exports.uploadProduct = function(req,res,next) {
-    console.log(req);
     let name;
     switch (req.headers.category_id){
 		case '1':
@@ -61,7 +60,6 @@ exports.uploadProduct = function(req,res,next) {
         cb(null, `public/Image Product/${name}`);
       },
       filename: function (req, file, cb) {
-          console.log(req.body);
         cb(null, file.originalname );
       }
     });

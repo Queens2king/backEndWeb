@@ -27,15 +27,20 @@ router.get('/profile',userMiddleware.checkToken,userController.getUserById);
 router.get('/products/:productId', productController.getProductById);
 //Lay toan bo san pham theo category
 router.get('/category/:categoryId', productController.getProductByCategoryId);
-
+//Lay toan bo san pham cua shop
+router.get('/shop/:shop_id/product', productController.getProductByShopId);
+//Lay thong tin Shop tu product ID
+router.get('/product/:product_id', productController.getInfoShopByProductId);
 
 router.post('/register', authController.register);
 router.post('/login', authController.login);
 router.post('/profile',userMiddleware.checkToken,fileMiddleware.uploadFile,userController.updateProfile);
 router.post('/authRegister',authController.authRegister);
-
+router.post('/shopLogin', authController.shopLogin);
+router.post('/shopRegister', authController.shopRegister);
 
 router.post('/shop/:shop_id/product/add',fileMiddleware.uploadProduct,productController.addProduct);
 
+router.put('/shop/:shop_id/product/change/:product_id',fileMiddleware.uploadProduct, productController.changeInfoProduct);
 
 module.exports = router;
