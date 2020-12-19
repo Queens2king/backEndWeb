@@ -3,6 +3,8 @@ const express = require('express');
 const authController = require('../controllers/authController');
 const authValidator = require('../validator/auth');
 const productController = require('../controllers/productController');
+const productInCartController = require('../controllers/productInCartController');
+const cartController = require('../controllers/cartController');
 const userController = require('../controllers/userController');
 const shopController = require('../controllers/shopController');
 
@@ -44,6 +46,11 @@ router.post('/shopRegister', authController.shopRegister);
 
 router.post('/shop/:shop_id/product/add',fileMiddleware.uploadProduct,productController.addProduct);
 
+router.post('/productInCart/:user_id/:product_id',productInCartController.createProductInCart);
+router.post('/increaseProductInCart/:user_id/:product_id',productInCartController.updateProductInCartIncrease);
+router.post('/decreaseProductInCart/:user_id/:product_id',productInCartController.updateProductInCartDecrease);
+router.post('/cart/:user_id',cartController.createCart);  
+router.post('/updateCart/:user_id',cartController.updateCart); 
 router.put('/shop/:shop_id/product/change/:product_id',fileMiddleware.uploadProduct, productController.changeInfoProduct);
 
 module.exports = router;
