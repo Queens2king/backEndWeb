@@ -4,6 +4,7 @@ const authController = require('../controllers/authController');
 const authValidator = require('../validator/auth');
 const productController = require('../controllers/productController');
 const userController = require('../controllers/userController');
+const shopController = require('../controllers/shopController');
 
 const userMiddleware = require('../middleware/userMiddleware');
 const fileMiddleware = require('../middleware/fileMiddleware');
@@ -22,6 +23,7 @@ router.get('/',productController.getFirstListProduct);
 router.get('/sendMail',authController.sendMail);
 // router.get('/profile/:userId',userController.getUserById);
 router.get('/profile',userMiddleware.checkToken,userController.getUserById);
+router.get('/shopProfile',userMiddleware.checkShopToken,shopController.getShopById);
 
 //Lay san pham theo ID
 router.get('/products/:productId', productController.getProductById);
@@ -30,11 +32,12 @@ router.get('/category/:categoryId', productController.getProductByCategoryId);
 //Lay toan bo san pham cua shop
 router.get('/shop/:shop_id/product', productController.getProductByShopId);
 //Lay thong tin Shop tu product ID
-router.get('/product/:product_id', productController.getInfoShopByProductId);
+router.get('/shopProduct/:product_id', productController.getInfoShopByProductId);
 
 router.post('/register', authController.register);
 router.post('/login', authController.login);
 router.post('/profile',userMiddleware.checkToken,fileMiddleware.uploadFile,userController.updateProfile);
+router.post('/shopProfile',userMiddleware.checkShopToken,fileMiddleware.uploadFile,shopController.updateProfile);
 router.post('/authRegister',authController.authRegister);
 router.post('/shopLogin', authController.shopLogin);
 router.post('/shopRegister', authController.shopRegister);

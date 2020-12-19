@@ -3,10 +3,10 @@ var multer = require('multer');
 exports.uploadFile = function(req,res,next) {
     var storage = multer.diskStorage({
         destination: function (req, file, cb) {
-        cb(null, 'public')
+        cb(null, 'public/images/avatars')
       },
       filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' +file.originalname )
+        cb(null, file.originalname )
       }
     });
     var upload = multer({ storage: storage }).single('avatar');

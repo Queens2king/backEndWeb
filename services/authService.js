@@ -173,7 +173,7 @@ exports.shopRegister = async(req) => {
         return result;
     } catch(err){
         console.log(err);
-        result.message = "Failed to create user";
+        result.message = "Failed to create shop";
         return result;
     }
     return null;

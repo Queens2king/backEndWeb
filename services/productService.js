@@ -2,6 +2,7 @@ const moment = require('moment');
 
 const db = require('../models/index');
 const { Product } = require('../models/index');
+const { Shop } = require('../models/index');
 
 exports.getProducts = async function (req) {
 	if (JSON.stringify(req.params) === '{}')
@@ -140,7 +141,7 @@ exports.getInfoShopByProductId = async function (req){
 		const product = await Product.findByPk(req.params.product_id);
 		const shop = await Shop.findOne({
 			where : {
-				shop_id : product.shop_id
+				shop_id : product.dataValues.shop_id
 			}
 		});
 		return shop.dataValues;

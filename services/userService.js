@@ -59,7 +59,7 @@ exports.updateProfile = async function(req,res){
     message:'',
     user:{}
   }
-  const data = {...req.body};
+  let data = {...req.body};
   for(element in data){
     console.log(data[element]);
   }
@@ -67,7 +67,9 @@ exports.updateProfile = async function(req,res){
     if (data[element] == "" || data[element] == "null" || data[element] == undefined || data[element] == null || data[element] == 'undefined')
       delete data[element];
   }
-  console.log(data);
+  if(req.file){
+    data.avatar = `images/avatars/${req.file.originalname}`;
+  }
   try{
     const updatedUser = await User.update(
       {
@@ -83,6 +85,7 @@ exports.updateProfile = async function(req,res){
     return result;
   } catch (err){
     console.log(err);
+    result.message = "Failed to updated";
     return result;
   }
 }
