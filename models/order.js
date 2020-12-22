@@ -2,6 +2,7 @@ const { Model } = require('sequelize');
 const Sequelize = require('sequelize');
 
 module.exports = (sequelize,DataTypes) => {
+
   class Order extends Model {
     /**
      * Helper method for defining associations.
@@ -9,6 +10,7 @@ module.exports = (sequelize,DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
      static associate(models) {
+
       // define association here
       this.belongsTo(models.User,{ foreignKey: 'user_id'});
       this.belongsTo(models.Shop,{ foreignKey: 'shop_id'});
@@ -55,3 +57,4 @@ module.exports = (sequelize,DataTypes) => {
   );
   return Order;
 };
+

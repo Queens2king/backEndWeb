@@ -11,7 +11,7 @@ const shopController = require('../controllers/shopController');
 
 const userMiddleware = require('../middleware/userMiddleware');
 const fileMiddleware = require('../middleware/fileMiddleware');
-
+const orderController = require('../controllers/orderController');
 const router = express.Router();
 
 /* GET home page. */
@@ -68,5 +68,27 @@ router.post('/rating/:product_id',productController.updateRating);
 
 
 router.put('/shop/:shop_id/product/change/:product_id',fileMiddleware.uploadProduct, productController.changeInfoProduct);
+//Top Sale theo tung shop 
+router.get('/shop/:shop_id/topsales', productController.getTopSaleByShopId);
+
+//Top 10 order gan nhat thep tung shop
+router.get('/shop/:shop_id/recentorder', orderController.getRecentOrderByShopId);
+
+// Update status order
+router.put('/shop/:shop_id/order/:order_id', orderController.changeStatusOrder);
+//Lay toan bo order cua shop
+router.get('/shop/:shop_id/order', orderController.getOrderByShopId);
+//Lay total order shop
+router.get('/shop/:shop_id/totalorder', orderController.getTotalOrderByShopId);
+//Lay total money 
+router.get('/shop/:shop_id/totalMoney', orderController.getTotalMoney);
+//Tao order moi
+router.get('/user/:user_id/checkout', orderController.addOrder);
+//Lay total money theo thang
+router.get('/shop/:shop_id/totalMoney/:year/:month', orderController.getMoneyMonth);
+//Laay total order theo thang
+router.get('/shop/:shop_id/totalOrder/:year/:month', orderController.getOrderMonth);
+//Lay cac order cua user
+router.get('/user/:user_id/purchase', orderController.getOrderByIdUser);
 
 module.exports = router;

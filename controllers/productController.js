@@ -55,3 +55,8 @@ exports.updateRating = async(req,res) => {
         updatedProduct : updatedProduct
 	});
 }
+
+exports.getTopSaleByShopId = async (req, res) =>{
+	const listProduct = await productService.getTopSaleByShopId(req);
+	return res.json(listProduct);
+}
