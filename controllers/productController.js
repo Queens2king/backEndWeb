@@ -44,3 +44,7 @@ exports.getInfoShopByProductId = async(req,res) =>{
 	const shop = await productService.getInfoShopByProductId(req);
 	return res.json(shop);
 }
+exports.getTopSaleByShopId = async (req, res) =>{
+	const listProduct = await productService.getTopSaleByShopId(req);
+	return res.json(listProduct);
+}
