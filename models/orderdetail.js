@@ -1,44 +1,44 @@
 const { Model } = require('sequelize');
 const Sequelize = require('sequelize');
-module.exports = (sequelize, DataTypes) => {
-  class Orderdetail extends Model {
+
+module.exports = (sequelize,DataTypes) => {
+  class OrderDetail extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate(models) {
+     static associate(models) {
       // define association here
+      this.belongsTo(models.Order,{ foreignKey: 'order_id'});
+      this.belongsTo(models.Product,{ foreignKey: 'product_id'});
     }
   }
-  Orderdetail.init(
+  OrderDetail.init(
     {
-      order_id :{
-        type: DataTypes.BIGINT,
+      orderDetail_id: {
+        type: Sequelize.DataTypes.BIGINT,
         allowNull: false,
-        primaryKey: true,
-      },
-      product_id : {
-        type : DataTypes.BIGINT,
-        allowNull: false,
-        primaryKey: true,
+        autoIncrement: true,
+        unique: true,
+        primaryKey: true
       },
       quantity: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
+        type: Sequelize.DataTypes.BIGINT,
+        allowNull: false
       },
       priceEach: {
-        type: DataTypes.DOUBLE,
-        allowNull: false,
+        type: Sequelize.DataTypes.DOUBLE,
+        allowNull: false
       },
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE
     },
     {
       sequelize,
-      modelName: 'Orderdetail',
+      modelName: 'OrderDetail',
       freezeTableName: true
     },
   );
-  return Orderdetail;
+  return OrderDetail;
 };
