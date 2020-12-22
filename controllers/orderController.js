@@ -19,3 +19,9 @@ exports.getOrders = async (req,res) => {
         userOrders : userOrders
     });
 }
+
+exports.getOrderByIdUser = async (req, res) =>{
+	const oderByIdUser = await orderService.getOrderByIdUser(req);
+	return res.json(oderByIdUser);
+}
+

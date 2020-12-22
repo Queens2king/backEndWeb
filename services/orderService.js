@@ -83,3 +83,18 @@ exports.getOrders = async (req) => {
         return null;
     }
 }
+
+exports.getOrderByIdUser = async function(req) {
+	try {
+		const orderByIdUser = await db.sequelize.query(`SELECT status, user_id, orderDate, requiredDate, shippedDate,order_id,(SELECT SUM(priceEach * quantity) FROM orderdetail WHERE o.order_id = orderdetail.order_id) AS 'total' FROM shopshop.order o 
+			WHERE user_id = ${req.params.user_id}`,{
+			type: db.sequelize.QueryTypes.SELECT
+		});
+		return orderByIdUser;
+		
+	}
+	catch(err){
+		console.log(err);
+		return null;
+	}
+}

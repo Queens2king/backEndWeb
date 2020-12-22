@@ -40,7 +40,8 @@ router.get('/shopProduct/:product_id', productController.getInfoShopByProductId)
 router.get('/cart/:user_id',cartController.getCart);
 //Lay thong tin order nguoi dung
 router.get('/order/:user_id',orderController.getOrders);
-
+//Lay cac order cua user 
+router.get('/user/:user_id/purchase', orderController.getOrderByIdUser);
 
 router.post('/register', authController.register);
 router.post('/login', authController.login);
