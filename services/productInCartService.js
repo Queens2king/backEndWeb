@@ -23,6 +23,7 @@ exports.updateProductInCartIncrease = async function (req){
     try{
         const checkProduct = await ProductInCart.findAll({
             where: {
+                user_id : req.params.user_id,
                 product_id : req.params.product_id
             }
         });
@@ -53,10 +54,28 @@ exports.updateProductInCartDecrease = async function (req){
                 product_id : req.params.product_id
             }
         });
-        updateProduct.quantity = updateProduct.quantity - 1;
-        const updatedProduct = await updateProduct.save();
-        return updatedProduct.dataValues;
+        if(updateProduct.quantity && updateProduct.quantity>1)
+        {
+            updateProduct.quantity = updateProduct.quantity - 1;
+            const updatedProduct = await updateProduct.save();
+            return updatedProduct.dataValues;
+        }
     } catch (err){
+        console.log(err);
+        return null;
+    }
+}
+
+exports.updateProductInCartDelete = async function (req){
+    try{
+        const deletedProduct = await ProductInCart.destroy({
+            where: {
+                user_id : req.params.user_id,
+                product_id : req.params.product_id
+            }
+        });
+        return deletedProduct;
+    } catch(err){
         console.log(err);
         return null;
     }

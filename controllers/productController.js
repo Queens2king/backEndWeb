@@ -44,3 +44,14 @@ exports.getInfoShopByProductId = async(req,res) =>{
 	const shop = await productService.getInfoShopByProductId(req);
 	return res.json(shop);
 }
+
+exports.updateRating = async(req,res) => {
+	
+	const updatedProduct = await productService.updateRating(req);
+    if(updatedProduct == null)
+        return {message : "Failed to get"}
+    return res.json({
+        message: 'Success',
+        updatedProduct : updatedProduct
+	});
+}

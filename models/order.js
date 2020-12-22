@@ -2,7 +2,7 @@ const { Model } = require('sequelize');
 const Sequelize = require('sequelize');
 
 module.exports = (sequelize,DataTypes) => {
-  class Product extends Model {
+  class Order extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -10,49 +10,48 @@ module.exports = (sequelize,DataTypes) => {
      */
      static associate(models) {
       // define association here
-        this.belongsTo(models.Category,{ foreignKey: 'category_id'});
-        this.belongsTo(models.Shop,{ foreignKey: 'shop_id'});
+      this.belongsTo(models.User,{ foreignKey: 'user_id'});
+      this.belongsTo(models.Shop,{ foreignKey: 'shop_id'});
     }
   }
-  Product.init(
+  Order.init(
     {
-      product_id: {
+      order_id: {
         type: Sequelize.DataTypes.BIGINT,
         allowNull: false,
         autoIncrement: true,
         unique: true,
         primaryKey: true
       },
-      product_name: {
-        type: Sequelize.DataTypes.STRING,
-        allowNull: false
-      },
-      product_image: {
-        type: Sequelize.DataTypes.STRING,
-      },
-      product_price: {
-        type: Sequelize.DataTypes.DOUBLE,
-        allowNull: false
-      },
-      product_rating: {
-        type: Sequelize.DataTypes.INTEGER,
-        allowNull: false
-      },
-      product_description: {
-        type: Sequelize.DataTypes.STRING,
-      },
-      quantityInStock: {
+      user_id: {
         type: Sequelize.DataTypes.BIGINT,
+        allowNull: false
+      },
+      orderDate: {
+        type: Sequelize.DataTypes.DATE,
+      },
+      requiredDate: {
+        type: Sequelize.DataTypes.DATE,
+      },
+      shippedDate: {
+        type: Sequelize.DataTypes.DATE,
+      },
+      status: {
+        type: Sequelize.DataTypes.STRING,
+        defaultValue: 'ordered'
+      },
+      comment: {
+        type: Sequelize.DataTypes.TEXT,
+        allowNull: false
       },
       createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE,
-      nosale: DataTypes.BIGINT
+      updatedAt: DataTypes.DATE
     },
     {
       sequelize,
-      modelName: 'Product',
+      modelName: 'Order',
       freezeTableName: true
     },
   );
-  return Product;
+  return Order;
 };

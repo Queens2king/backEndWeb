@@ -2,7 +2,7 @@ const { Model } = require('sequelize');
 const Sequelize = require('sequelize');
 
 module.exports = (sequelize,DataTypes) => {
-  class Product extends Model {
+  class OrderDetail extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -10,49 +10,35 @@ module.exports = (sequelize,DataTypes) => {
      */
      static associate(models) {
       // define association here
-        this.belongsTo(models.Category,{ foreignKey: 'category_id'});
-        this.belongsTo(models.Shop,{ foreignKey: 'shop_id'});
+      this.belongsTo(models.Order,{ foreignKey: 'order_id'});
+      this.belongsTo(models.Product,{ foreignKey: 'product_id'});
     }
   }
-  Product.init(
+  OrderDetail.init(
     {
-      product_id: {
+      orderDetail_id: {
         type: Sequelize.DataTypes.BIGINT,
         allowNull: false,
         autoIncrement: true,
         unique: true,
         primaryKey: true
       },
-      product_name: {
-        type: Sequelize.DataTypes.STRING,
+      quantity: {
+        type: Sequelize.DataTypes.BIGINT,
         allowNull: false
       },
-      product_image: {
-        type: Sequelize.DataTypes.STRING,
-      },
-      product_price: {
+      priceEach: {
         type: Sequelize.DataTypes.DOUBLE,
         allowNull: false
       },
-      product_rating: {
-        type: Sequelize.DataTypes.INTEGER,
-        allowNull: false
-      },
-      product_description: {
-        type: Sequelize.DataTypes.STRING,
-      },
-      quantityInStock: {
-        type: Sequelize.DataTypes.BIGINT,
-      },
       createdAt: DataTypes.DATE,
-      updatedAt: DataTypes.DATE,
-      nosale: DataTypes.BIGINT
+      updatedAt: DataTypes.DATE
     },
     {
       sequelize,
-      modelName: 'Product',
+      modelName: 'OrderDetail',
       freezeTableName: true
     },
   );
-  return Product;
+  return OrderDetail;
 };

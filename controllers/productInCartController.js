@@ -29,3 +29,13 @@ exports.updateProductInCartDecrease = async (req, res) => {
         updatedProductInCart : updatedProductInCart
     });
 };
+
+exports.updateProductInCartDelete = async (req, res) => {
+    const deletedProductInCart = await productInCartService.updateProductInCartDelete(req);
+    if(deletedProductInCart == null)
+        return {message : "Failed to create"}
+    return res.json({
+        message: 'Success',
+        deletedProductInCart : deletedProductInCart
+    });
+}

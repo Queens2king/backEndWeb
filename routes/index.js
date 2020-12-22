@@ -5,6 +5,7 @@ const authValidator = require('../validator/auth');
 const productController = require('../controllers/productController');
 const productInCartController = require('../controllers/productInCartController');
 const cartController = require('../controllers/cartController');
+const orderController = require('../controllers/orderController');
 const userController = require('../controllers/userController');
 const shopController = require('../controllers/shopController');
 
@@ -35,6 +36,11 @@ router.get('/category/:categoryId', productController.getProductByCategoryId);
 router.get('/shop/:shop_id/product', productController.getProductByShopId);
 //Lay thong tin Shop tu product ID
 router.get('/shopProduct/:product_id', productController.getInfoShopByProductId);
+//Lay thong tin products incart
+router.get('/cart/:user_id',cartController.getCart);
+//Lay thong tin order nguoi dung
+router.get('/order/:user_id',orderController.getOrders);
+
 
 router.post('/register', authController.register);
 router.post('/login', authController.login);
@@ -44,13 +50,22 @@ router.post('/authRegister',authController.authRegister);
 router.post('/shopLogin', authController.shopLogin);
 router.post('/shopRegister', authController.shopRegister);
 
+router.post('/order/:user_id',orderController.createOrder);
+
 router.post('/shop/:shop_id/product/add',fileMiddleware.uploadProduct,productController.addProduct);
 
 router.post('/productInCart/:user_id/:product_id',productInCartController.createProductInCart);
 router.post('/increaseProductInCart/:user_id/:product_id',productInCartController.updateProductInCartIncrease);
 router.post('/decreaseProductInCart/:user_id/:product_id',productInCartController.updateProductInCartDecrease);
+router.post('/deleteProductInCart/:user_id/:product_id',productInCartController.updateProductInCartDelete);
 router.post('/cart/:user_id',cartController.createCart);  
 router.post('/updateCart/:user_id',cartController.updateCart); 
+// router.post('/order/:user_id'.orderController.createOrder);
+router.post('/rating/:product_id',productController.updateRating);
+
+
+
+
 router.put('/shop/:shop_id/product/change/:product_id',fileMiddleware.uploadProduct, productController.changeInfoProduct);
 
 module.exports = router;
