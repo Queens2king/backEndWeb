@@ -132,3 +132,28 @@ exports.getOrderMonth = async function (req) {
 		return null;
 	}
 }
+exports.getOrderDetailByShop = async function(req) {
+	try{
+		const orderList = await db.sequelize.query(`select * from orderdetail ord inner join product p on ord.product_id = p.product_id where order_id = ${req.params.order_id} and shop_id = ${req.params.shop_id}`,{
+			type : db.sequelize.QueryTypes.SELECT
+		});
+		return orderList;
+	}
+	catch(err){
+		console.log(err);
+		return null;
+	}
+}
+exports.getOrderDetailByUser = async function(req) {
+	try{
+		const orderList = await db.sequelize.query(`select * from orderdetail ord inner join product p on ord.product_id = p.product_id 
+			inner join shopshop.order o on ord.order_id = o.order_id where o.order_id = ${req.params.order_id} and user_id = ${req.params.user_id}`,{
+			type : db.sequelize.QueryTypes.SELECT
+		});
+		return orderList;
+	}
+	catch(err){
+		console.log(err);
+		return null;
+	}
+}

@@ -74,5 +74,8 @@ router.get('/shop/:shop_id/totalMoney/:year/:month', orderController.getMoneyMon
 router.get('/shop/:shop_id/totalOrder/:year/:month', orderController.getOrderMonth);
 //Lay cac order cua user
 router.get('/user/:user_id/purchase', orderController.getOrderByIdUser);
-
+//Lay orderdetail theo shop
+router.get('/shop/:shop_id/order/:order_id/detail', orderController.getOrderDetailByShop);
+//Lay orderdetail theo user
+router.get('/user/:user_id/order/:order_id/detail', orderController.getOrderDetailByUser);
 module.exports = router;
