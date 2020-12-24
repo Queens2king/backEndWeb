@@ -72,7 +72,7 @@ exports.getOrders = async (req) => {
         SELECT * FROM orderdetail
             join product on orderdetail.product_id = product.product_id
             join shopshop.order on orderdetail.order_id = order.order_id
-            where order.user_id = ${req.params.user_id}
+            where order.user_id = ${req.params.user_id} and orderdetail.isRated = false
         `,
             {
                 type: db.sequelize.QueryTypes.SELECT
