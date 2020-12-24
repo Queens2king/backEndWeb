@@ -26,13 +26,15 @@ exports.getProducts = async function (req) {
 };
 
 exports.getFirstListProduct = async function (req) {
+	const page = ((+req.query.page)-1)*6;
 	try{
-		const firstListProduct = await db.sequelize.query(`Select* from product
-		limit 6
-		`,{
-			type: db.sequelize.QueryTypes.SELECT
+		const firstListProduct = await Product.findAndCountAll({
+			where: {},
+			order: [],
+			limit: 6,
+			offset: page,
 		});
-		return firstListProduct;
+		return firstListProduct.rows;
 	} catch (err){
 		console.log(err);
 		return err;
@@ -54,17 +56,17 @@ exports.getProductById = async function(req) {
 	}
 }
 exports.getProductByCategoryId = async function(req){
+	const page = ((+req.query.page)-1)*6;
 	try {
-		const productByCategorId = await Product.findAll({
+		const productByCategorId = await Product.findAndCountAll({
 			where : {
 				category_id : req.params.categoryId
-			}
+			},
+			order: [],
+			limit: 6,
+			offset: page
 		});
-		let products = [];
-		for (product of productByCategorId){
-			products.push(product.dataValues);
-		}
-		return products;
+		return productByCategorId.rows;
 	}catch(err){
 		console.log(err);
 		return null;
@@ -72,17 +74,18 @@ exports.getProductByCategoryId = async function(req){
 }
 
 exports.getProductByShopId = async function(req){
+	const page = ((+req.query.page)-1)*6;
 	try {
-		const productByShopId = await Product.findAll({
+		const productByShopId = await Product.findAndCountAll({
 			where :{
 				shop_id : req.params.shop_id
-			}
+			},
+			order: [],
+			limit: 6,
+			offset: page
 		});
-		let products = [];
-		for (product of productByShopId){
-			products.push(product.dataValues);
-		}
-		return products;
+		
+		return productByShopId.rows;
 	}
 	catch(err){
 		console.log(err);
@@ -94,7 +97,8 @@ exports.changeInfoProduct = async function(req,res) {
 	try {
 		const product = await Product.findByPk(req.params.product_id);
 		if (product){
-			product.product_image = `Image Product/${res.locals.name}/${req.file.originalname}`,
+			if(req.file)
+				product.product_image = `Image Product/${res.locals.name}/${req.file.originalname}`;
 			product.product_name = req.body.product_name;
 			product.product_price = req.body.product_price;
 			product.product_description = req.body.product_description;
@@ -151,6 +155,20 @@ exports.getInfoShopByProductId = async function (req){
 		return null;
 	}
 }
+
+exports.updateRating = async function (req){
+	try{
+		const product = await Product.findByPk(req.params.product_id);
+		product.product_rating = parseInt(((product.nosale - req.body.quantity)*product.product_rating+req.body.quantity*req.body.rating)/product.nosale);
+		const updatedProduct = await product.save();
+		return updatedProduct;
+	}
+	catch(err){
+		console.log(err);
+		return null;
+	}
+}
+
 exports.getTopSaleByShopId = async function (req) {
 	try{
 		const listProduct = await Product.findAll({

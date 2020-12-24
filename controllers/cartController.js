@@ -19,3 +19,13 @@ exports.updateCart = async (req, res) => {
         updatedCart : updatedCart
     });
 };
+
+exports.getCart = async (req,res) => {
+    const userCart = await cartService.getCart(req);
+    if(userCart == null)
+        return {message : "Failed to get"}
+    return res.json({
+        message: 'Success',
+        userCart : userCart
+    });
+}

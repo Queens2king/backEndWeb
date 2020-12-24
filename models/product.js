@@ -34,6 +34,10 @@ module.exports = (sequelize,DataTypes) => {
         type: Sequelize.DataTypes.DOUBLE,
         allowNull: false
       },
+      product_rating: {
+        type: Sequelize.DataTypes.INTEGER,
+        allowNull: false
+      },
       product_description: {
         type: Sequelize.DataTypes.STRING,
       },

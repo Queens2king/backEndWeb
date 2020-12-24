@@ -16,6 +16,8 @@ const defaultMiddleware = require('./middleware/default');
 const staticSetting = require('./statics/index');
 const { sequelize } = require('./models/index');
 
+const cartCronJobs = require('./cronJobs/cartCronJobs');
+
 dotenv.config();
 const app = express();
 
@@ -24,6 +26,9 @@ app.use(cors());
 
 // serve public file
 app.use(express.static('public'));
+
+// cronJobs
+// cartCronJobs.autoUpdateCart.start();
 
 // store logs
 const accessLogStream = rfs.createStream(generator.logFileGenerator(), {
