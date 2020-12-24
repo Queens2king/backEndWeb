@@ -26,7 +26,9 @@ exports.getProducts = async function (req) {
 };
 
 exports.getFirstListProduct = async function (req) {
-	const page = ((+req.query.page)-1)*6;
+	let page = 0;
+	if(req.query.page) 
+		page = ((+req.query.page)-1)*6;
 	try{
 		const firstListProduct = await Product.findAndCountAll({
 			where: {},
@@ -56,7 +58,9 @@ exports.getProductById = async function(req) {
 	}
 }
 exports.getProductByCategoryId = async function(req){
-	const page = ((+req.query.page)-1)*6;
+	let page = 0;
+	if(req.query.page)
+	page = ((+req.query.page)-1)*6;
 	try {
 		const productByCategorId = await Product.findAndCountAll({
 			where : {
@@ -74,7 +78,9 @@ exports.getProductByCategoryId = async function(req){
 }
 
 exports.getProductByShopId = async function(req){
-	const page = ((+req.query.page)-1)*6;
+	let page = 0;
+	if(req.query.page)
+	page = ((+req.query.page)-1)*6;
 	try {
 		const productByShopId = await Product.findAndCountAll({
 			where :{
@@ -155,6 +161,15 @@ exports.getInfoShopByProductId = async function (req){
 		return null;
 	}
 }
+
+
+
+
+
+
+
+
+
 
 exports.updateRating = async function (req){
 	try{

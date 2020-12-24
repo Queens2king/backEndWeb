@@ -57,3 +57,11 @@ exports.getOrderMonth = async(req, res) =>{
 	const order = await orderService.getOrderMonth(req);
 	return res.json(order);
 }
+exports.getOrderDetailByShop = async(req, res) =>{
+	const listOrder = await orderService.getOrderDetailByShop(req);
+	return res.json(listOrder);
+}
+exports.getOrderDetailByUser = async(req, res) =>{
+	const listOrder = await orderService.getOrderDetailByUser(req);
+	return res.json(listOrder);
+}

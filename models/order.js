@@ -40,7 +40,7 @@ module.exports = (sequelize,DataTypes) => {
       },
       status: {
         type: Sequelize.DataTypes.STRING,
-        defaultValue: 'ordered'
+        defaultValue: 'processing'
       },
       comment: {
         type: Sequelize.DataTypes.TEXT,

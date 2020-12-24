@@ -54,6 +54,7 @@ exports.createOrder = async (req) => {
         const updatedProductList = await Promise.all(
             ProductList.map((productResult,index) => {
                 productResult.nosale += req.body.cart[index].quantity;
+                productResult.quantityInStock -= req.body.cart[index].quantity;
                 return productResult.save();
             })
         );
@@ -70,8 +71,8 @@ exports.getOrders = async (req) => {
         const userOrders= await db.sequelize.query(`
         SELECT * FROM orderdetail
             join product on orderdetail.product_id = product.product_id
-            join shopshop1.order on orderdetail.order_id = order.order_id
-            where order.user_id = ${req.params.user_id} and order.status = 'ordered'
+            join shopshop.order on orderdetail.order_id = order.order_id
+            where order.user_id = ${req.params.user_id}
         `,
             {
                 type: db.sequelize.QueryTypes.SELECT
@@ -210,6 +211,31 @@ exports.getOrderMonth = async function (req) {
 		return order;	
 	}
 	catch(err) {
+		console.log(err);
+		return null;
+	}
+}
+exports.getOrderDetailByShop = async function(req) {
+	try{
+		const orderList = await db.sequelize.query(`select * from orderdetail ord inner join product p on ord.product_id = p.product_id where order_id = ${req.params.order_id} and shop_id = ${req.params.shop_id}`,{
+			type : db.sequelize.QueryTypes.SELECT
+		});
+		return orderList;
+	}
+	catch(err){
+		console.log(err);
+		return null;
+	}
+}
+exports.getOrderDetailByUser = async function(req) {
+	try{
+		const orderList = await db.sequelize.query(`select * from orderdetail ord inner join product p on ord.product_id = p.product_id 
+			inner join shopshop.order o on ord.order_id = o.order_id where o.order_id = ${req.params.order_id} and user_id = ${req.params.user_id}`,{
+			type : db.sequelize.QueryTypes.SELECT
+		});
+		return orderList;
+	}
+	catch(err){
 		console.log(err);
 		return null;
 	}
