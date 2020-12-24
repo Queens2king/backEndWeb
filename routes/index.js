@@ -94,5 +94,4 @@ router.get('/user/:user_id/purchase', orderController.getOrderByIdUser);
 router.get('/shop/:shop_id/order/:order_id/detail', orderController.getOrderDetailByShop);
 //Lay orderdetail theo user
 router.get('/user/:user_id/order/:order_id/detail', orderController.getOrderDetailByUser);
-
 module.exports = router;
