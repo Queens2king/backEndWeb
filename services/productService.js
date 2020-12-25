@@ -3,6 +3,7 @@ const moment = require('moment');
 const db = require('../models/index');
 const { Product } = require('../models/index');
 const { Shop } = require('../models/index');
+const { Op } = require("sequelize");
 
 exports.getProducts = async function (req) {
 	if (JSON.stringify(req.params) === '{}')
@@ -31,7 +32,11 @@ exports.getFirstListProduct = async function (req) {
 		page = ((+req.query.page)-1)*6;
 	try{
 		const firstListProduct = await Product.findAndCountAll({
-			where: {},
+			where: {
+				product_name:{
+					[Op.like]: `%${req.query.name}%`
+				}		
+			},
 			order: [],
 			limit: 6,
 			offset: page,
@@ -64,11 +69,15 @@ exports.getProductByCategoryId = async function(req){
 	try {
 		const productByCategorId = await Product.findAndCountAll({
 			where : {
-				category_id : req.params.categoryId
+				category_id : req.params.categoryId,
+				product_name:{
+					[Op.like]: `%${req.query.name}%`
+				}	
 			},
 			order: [],
 			limit: 6,
 			offset: page
+
 		});
 		return productByCategorId.rows;
 	}catch(err){
@@ -84,7 +93,10 @@ exports.getProductByShopId = async function(req){
 	try {
 		const productByShopId = await Product.findAndCountAll({
 			where :{
-				shop_id : req.params.shop_id
+				shop_id : req.params.shop_id,
+				product_name:{
+					[Op.like]: `%${req.query.name}%`
+				}	
 			},
 			order: [],
 			limit: 6,
@@ -151,7 +163,7 @@ exports.getInfoShopByProductId = async function (req){
 		const product = await Product.findByPk(req.params.product_id);
 		const shop = await Shop.findOne({
 			where : {
-				shop_id : product.dataValues.shop_id
+				shop_id : product.shop_id
 			}
 		});
 		return shop.dataValues;
