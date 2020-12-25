@@ -31,10 +31,6 @@ module.exports = (sequelize,DataTypes) => {
         type: Sequelize.DataTypes.DOUBLE,
         allowNull: false
       },
-      isRated: {
-        type: Sequelize.DataTypes.BOOLEAN,
-        defaultValue: false
-      },
       createdAt: DataTypes.DATE,
       updatedAt: DataTypes.DATE
     },
