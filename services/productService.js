@@ -3,6 +3,8 @@ const moment = require('moment');
 const db = require('../models/index');
 const { Product } = require('../models/index');
 const { Shop } = require('../models/index');
+const { OrderDetail } = require('../models/index');
+const { Op } = require("sequelize");
 
 exports.getProducts = async function (req) {
 	if (JSON.stringify(req.params) === '{}')
@@ -26,10 +28,16 @@ exports.getProducts = async function (req) {
 };
 
 exports.getFirstListProduct = async function (req) {
-	const page = ((+req.query.page)-1)*6;
+	let page = 0;
+	if(req.query.page) 
+		page = ((+req.query.page)-1)*6;
 	try{
 		const firstListProduct = await Product.findAndCountAll({
-			where: {},
+			where: {
+				product_name:{
+					[Op.like]: `%${req.query.name}%`
+				}		
+			},
 			order: [],
 			limit: 6,
 			offset: page,
@@ -56,15 +64,21 @@ exports.getProductById = async function(req) {
 	}
 }
 exports.getProductByCategoryId = async function(req){
-	const page = ((+req.query.page)-1)*6;
+	let page = 0;
+	if(req.query.page)
+	page = ((+req.query.page)-1)*6;
 	try {
 		const productByCategorId = await Product.findAndCountAll({
 			where : {
-				category_id : req.params.categoryId
+				category_id : req.params.categoryId,
+				product_name:{
+					[Op.like]: `%${req.query.name}%`
+				}	
 			},
 			order: [],
 			limit: 6,
 			offset: page
+
 		});
 		return productByCategorId.rows;
 	}catch(err){
@@ -74,11 +88,16 @@ exports.getProductByCategoryId = async function(req){
 }
 
 exports.getProductByShopId = async function(req){
-	const page = ((+req.query.page)-1)*6;
+	let page = 0;
+	if(req.query.page)
+	page = ((+req.query.page)-1)*6;
 	try {
 		const productByShopId = await Product.findAndCountAll({
 			where :{
-				shop_id : req.params.shop_id
+				shop_id : req.params.shop_id,
+				product_name:{
+					[Op.like]: `%${req.query.name}%`
+				}	
 			},
 			order: [],
 			limit: 6,
@@ -145,7 +164,7 @@ exports.getInfoShopByProductId = async function (req){
 		const product = await Product.findByPk(req.params.product_id);
 		const shop = await Shop.findOne({
 			where : {
-				shop_id : product.dataValues.shop_id
+				shop_id : product.shop_id
 			}
 		});
 		return shop.dataValues;
@@ -156,12 +175,44 @@ exports.getInfoShopByProductId = async function (req){
 	}
 }
 
+
+
+
+
+
+
+
+
+
 exports.updateRating = async function (req){
 	try{
+		const orderDetail = await OrderDetail.findByPk(req.params.orderDetail_id);
+		orderDetail.isRated = true;
+		const updatedOrderDetail = await orderDetail.save();
 		const product = await Product.findByPk(req.params.product_id);
 		product.product_rating = parseInt(((product.nosale - req.body.quantity)*product.product_rating+req.body.quantity*req.body.rating)/product.nosale);
 		const updatedProduct = await product.save();
 		return updatedProduct;
+	}
+	catch(err){
+		console.log(err);
+		return null;
+	}
+}
+
+exports.getTopSaleByShopId = async function (req) {
+	try{
+		const listProduct = await Product.findAll({
+			where :{
+				shop_id : req.params.shop_id
+			},
+			order :[["nosale","DESC"]],
+			limit : 5
+		});
+		const products = [];
+		for(product of listProduct)
+			products.push(product.dataValues);
+		return products;
 	}
 	catch(err){
 		console.log(err);

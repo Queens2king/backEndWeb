@@ -54,6 +54,7 @@ exports.createOrder = async (req) => {
         const updatedProductList = await Promise.all(
             ProductList.map((productResult,index) => {
                 productResult.nosale += req.body.cart[index].quantity;
+                productResult.quantityInStock -= req.body.cart[index].quantity;
                 return productResult.save();
             })
         );
@@ -70,8 +71,8 @@ exports.getOrders = async (req) => {
         const userOrders= await db.sequelize.query(`
         SELECT * FROM orderdetail
             join product on orderdetail.product_id = product.product_id
-            join shopshop1.order on orderdetail.order_id = order.order_id
-            where order.user_id = ${req.params.user_id} and order.status = 'ordered'
+            join shopshop.order on orderdetail.order_id = order.order_id
+            where order.user_id = ${req.params.user_id} and orderdetail.isRated = false
         `,
             {
                 type: db.sequelize.QueryTypes.SELECT
@@ -82,4 +83,173 @@ exports.getOrders = async (req) => {
         console.log(err);
         return null;
     }
+}
+
+exports.getOrderByIdUser = async function(req) {
+	try {
+		const orderByIdUser = await db.sequelize.query(`SELECT status, user_id, orderDate, requiredDate, shippedDate,order_id,(SELECT SUM(priceEach * quantity) FROM orderdetail WHERE o.order_id = orderdetail.order_id) AS 'total' FROM shopshop.order o 
+			WHERE user_id = ${req.params.user_id}`,{
+			type: db.sequelize.QueryTypes.SELECT
+		});
+		return orderByIdUser;
+		
+	}
+	catch(err){
+		console.log(err);
+		return null;
+	}
+}
+
+exports.getRecentOrderByShopId = async function (req){
+	try{
+		const listOrder = await Order.findAll({
+			where :{
+				shop_id : req.params.shop_id
+			},
+			order :[["orderDate","DESC"]],
+			limit : 5
+		});
+		const orders = [];
+		for(order of listOrder)
+			orders.push(order.dataValues);
+		return orders;
+	}
+	catch(err){
+		console.log(err);
+		return null;
+	}
+}
+
+exports.getOrderByShopId = async function(req){
+	try{
+		const orderByShopId = await db.sequelize.query(`SELECT status, orderDate, requiredDate, shippedDate,order_id,(SELECT SUM(priceEach * quantity) FROM orderdetail WHERE o.order_id = orderdetail.order_id) AS 'total' FROM shopshop.order o 
+			WHERE shop_id = ${req.params.shop_id}`,{
+			type: db.sequelize.QueryTypes.SELECT
+		});
+		return orderByShopId;
+	}
+	catch(err){
+		console.log(err);
+		return null;
+	}
+}
+exports.changeStatusOrder = async function(req){
+	try{
+		if(req.body.status === 'deleted')
+		{
+			const deletedOrder = await Order.destroy({
+				where :{
+					order_id : req.params.order_id
+				}
+			});
+			const deletedOrdersDetail = await OrderDetail.destroy({
+				where :{
+					order_id : req.params.order_id
+				}
+			});
+			return deletedOrder;
+		}
+		const orderByShopId = await Order.findOne({where :{
+			order_id : req.params.order_id
+		}});
+		if (orderByShopId) {
+			orderByShopId.status = req.body.status;
+			const orders = await orderByShopId.save();
+			return orders.dataValues;
+		}
+	}
+	catch(err){
+		console.log(err);
+		return null;
+	}
+}
+exports.getTotalOrderByShopId = async function(req){
+	try{
+		const totalOrder = await db.sequelize.query(`select count(order_id) as 'total' from shopshop.order where shop_id = ${req.params.shop_id}`,{
+			type : db.sequelize.QueryTypes.SELECT
+		});
+		return totalOrder;
+	}	
+	catch(err){
+		console.log(err);
+		return null;
+	}
+}
+
+exports.getTotalMoney = async function(req) {
+	try{
+		const totalMoney = await db.sequelize.query(`SELECT SUM(quantity*priceEach) as 'total' from shopshop.order o
+				Inner join orderdetail ord ON o.order_id = ord.order_id
+					where shop_id = ${req.params.shop_id}`,{
+					type : db.sequelize.QueryTypes.SELECT	
+				});
+		return totalMoney;
+	}
+	catch(err){
+		console.log(err);
+		return null;
+	}
+}
+exports.addOrder = async function (req) {
+	try {
+		const tmpPro = await db.sequelize.query(`select DISTRINCT shop_id from productincart inner join product ON productincart.product_id = product.product_id`,{
+			type : db.sequelize.QueryTypes.SELECT
+		});
+		return tmpPro;
+	}
+	catch(err){
+		console.log(err);
+		return null;
+	}
+}
+exports.getMoneyMonth = async function (req) {
+	try{
+		const month =  await db.sequelize.query(`SELECT SUM(quantity*priceEach) as 'total' from shopshop.order o
+				Inner join orderdetail ord ON o.order_id = ord.order_id
+					where shop_id = ${req.params.shop_id} and month(o.orderDate) = ${req.params.month} and year(o.orderDate) = ${req.params.year}`,{
+					type : db.sequelize.QueryTypes.SELECT	
+				});
+		return month;
+	}
+	catch(err){
+		console.log(err);
+		return null;
+	}
+}
+exports.getOrderMonth = async function (req) {
+	try{
+		const order = await db.sequelize.query(`select count(order_id) as 'total' from shopshop.order o where shop_id = ${req.params.shop_id} and month(o.orderDate) = ${req.params.month} and year(o.orderDate) = ${req.params.year}`,{
+			type : db.sequelize.QueryTypes.SELECT
+		});
+		return order;	
+	}
+	catch(err) {
+		console.log(err);
+		return null;
+	}
+}
+exports.getOrderDetailByShop = async function(req) {
+	try{
+		const orderList = await db.sequelize.query(`select * from orderdetail ord inner join product p on ord.product_id = p.product_id where order_id = ${req.params.order_id} and shop_id = ${req.params.shop_id}`,{
+			type : db.sequelize.QueryTypes.SELECT
+		});
+		return orderList;
+	}
+	catch(err){
+		console.log(err);
+		return null;
+	}
+}
+exports.getOrderDetailByUser = async function(req) {
+	try{
+		const orderList = await db.sequelize.query(`select * from orderdetail ord inner join product p on ord.product_id = p.product_id 
+			inner join shopshop.order o on ord.order_id = o.order_id where o.order_id = ${req.params.order_id} and user_id = ${req.params.user_id}`,{
+			type : db.sequelize.QueryTypes.SELECT
+		});
+		return orderList;
+	}
+	catch(err){
+		console.log(err);
+		return null;
+	}
 }

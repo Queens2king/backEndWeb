@@ -36,3 +36,18 @@ exports.sendMailRegister= async(receiverEmail,token) => {
         return null;
     }
 }
+
+exports.sendMailRating = async(receiverEmail,order) => {
+    const options = {
+        from: adminEmail, // địa chỉ admin email bạn dùng để gửi
+        to: receiverEmail, // địa chỉ gửi đến
+        subject: "Cảm ơn quý khách", // Tiêu đề của mail
+        html: `
+        <div>
+        <h2>Cảm ơn bạn đã tin tưởng sử dụng ứng dụng<h2>
+        <p> Đơn hàng với id là <strong>${order.order_id}</strong> đã được vận chuyển, vui lòng chú ý điện thoại và đánh giá sản phẩm tại đây nhé</p>
+        <a href="http://localhost:3000"><h3>ĐI TỚI TRANG CHỦ ỨNG DỤNG</h3></a>
+        </div>
+        ` // Phần nội dung mail mình sẽ dùng html thay vì thuần văn bản thông thường.
+    };
+}

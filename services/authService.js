@@ -179,4 +179,3 @@ exports.shopRegister = async(req) => {
     return null;
 }
 
-// where user.email = ${req.body.email}

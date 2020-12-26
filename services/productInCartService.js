@@ -80,3 +80,18 @@ exports.updateProductInCartDelete = async function (req){
         return null;
     }
 }
+
+exports.updateProductInCartDeleteAll = async function (req){
+    try{
+        const deletedProduct = await ProductInCart.destroy({
+            where: {
+                user_id : req.params.user_id
+            }
+        });
+        return deletedProduct;
+    } catch (err){
+        console.log(err);
+        return null;
+        
+    }
+}
