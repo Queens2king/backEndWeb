@@ -33,10 +33,17 @@ exports.getOrderByShopId = async(req, res) =>{
 	const orderByShopId = await orderService.getOrderByShopId(req);
 	return res.json(orderByShopId);
 }
+
 exports.changeStatusOrder = async(req, res) =>{
 	const newOrder = await orderService.changeStatusOrder(req);
-	return res.json(newOrder);
+    if(newOrder == null)
+        return {message : "Failed to update"}
+    return res.json({
+        message: 'Success',
+        newOrder : newOrder
+    });
 }
+
 exports.getTotalOrderByShopId = async(req, res) =>{
 	const totalOrder = await orderService.getTotalOrderByShopId(req);
 	return res.json(totalOrder);

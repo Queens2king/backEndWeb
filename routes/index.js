@@ -62,7 +62,7 @@ router.post('/deleteAllProductInCart/:user_id',productInCartController.updatePro
 router.post('/cart/:user_id',cartController.createCart);  
 router.post('/updateCart/:user_id',cartController.updateCart); 
 // router.post('/order/:user_id'.orderController.createOrder);
-router.post('/rating/:product_id',productController.updateRating);
+router.post('/rating/:product_id/:orderDetail_id',productController.updateRating);
 
 
 
@@ -75,7 +75,7 @@ router.get('/shop/:shop_id/topsales', productController.getTopSaleByShopId);
 router.get('/shop/:shop_id/recentorder', orderController.getRecentOrderByShopId);
 
 // Update status order
-router.put('/shop/:shop_id/order/:order_id', orderController.changeStatusOrder);
+router.post('/changeOrder/:order_id', orderController.changeStatusOrder);
 //Lay toan bo order cua shop
 router.get('/shop/:shop_id/order', orderController.getOrderByShopId);
 //Lay total order shop

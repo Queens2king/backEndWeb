@@ -3,6 +3,7 @@ const moment = require('moment');
 const db = require('../models/index');
 const { Product } = require('../models/index');
 const { Shop } = require('../models/index');
+const { OrderDetail } = require('../models/index');
 const { Op } = require("sequelize");
 
 exports.getProducts = async function (req) {
@@ -185,6 +186,9 @@ exports.getInfoShopByProductId = async function (req){
 
 exports.updateRating = async function (req){
 	try{
+		const orderDetail = await OrderDetail.findByPk(req.params.orderDetail_id);
+		orderDetail.isRated = true;
+		const updatedOrderDetail = await orderDetail.save();
 		const product = await Product.findByPk(req.params.product_id);
 		product.product_rating = parseInt(((product.nosale - req.body.quantity)*product.product_rating+req.body.quantity*req.body.rating)/product.nosale);
 		const updatedProduct = await product.save();

@@ -135,9 +135,22 @@ exports.getOrderByShopId = async function(req){
 }
 exports.changeStatusOrder = async function(req){
 	try{
+		if(req.body.status === 'deleted')
+		{
+			const deletedOrder = await Order.destroy({
+				where :{
+					order_id : req.params.order_id
+				}
+			});
+			const deletedOrdersDetail = await OrderDetail.destroy({
+				where :{
+					order_id : req.params.order_id
+				}
+			});
+			return deletedOrder;
+		}
 		const orderByShopId = await Order.findOne({where :{
-			order_id : req.params.order_id,
-			shop_id : req.params.shop_id
+			order_id : req.params.order_id
 		}});
 		if (orderByShopId) {
 			orderByShopId.status = req.body.status;
