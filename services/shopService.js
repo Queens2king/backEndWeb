@@ -26,6 +26,19 @@ exports.updateProfile = async function(req,res){
 	  shop:{}
 	}
 	let data = {...req.body};
+	if(req.body.pass.length > 0)
+  	{
+		const oldShop = await Shop.findOne({
+			where: {shop_id: res.locals.shop.shop_id}
+		});
+
+		const resultPassword = await bcrypt.compare(req.body.oldPassword,oldShop.dataValues.password);
+		if(resultPassword === false){
+		result.message = "Password is wrong !";
+		return result;
+		}
+		data.password = await bcrypt.hash(req.body.pass, 10);
+  	}
 	for(element in data){
 	  console.log(data[element]);
 	}

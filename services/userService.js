@@ -60,6 +60,19 @@ exports.updateProfile = async function(req,res){
     user:{}
   }
   let data = {...req.body};
+  if(req.body.pass.length > 0)
+  {
+    const oldUser = await User.findOne({
+      where: {user_id: res.locals.user.user_id}
+    });
+    const resultPassword = await bcrypt.compare(req.body.oldPassword,oldUser.dataValues.password);
+    if(resultPassword === false){
+      result.message = "Password is wrong !";
+      return result;
+    }
+    data.password = await bcrypt.hash(req.body.pass, 10);
+  }
+  
   for(element in data){
     console.log(data[element]);
   }
