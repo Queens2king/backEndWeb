@@ -23,7 +23,8 @@ exports.createOrder = async (req) => {
         const comment = "CITY "+req.body.form.city+" DISTRICT "+req.body.form.district;
         // Tạo các order ứng với mỗi shop_id
         const newOrders = (await Promise.all(fileredShopIdList.map(shop_id => Order.create({
-            user_id : req.params.user_id,
+			user_id : req.params.user_id,
+			phonenumber: req.body.form.phonenumber,
             comment: comment,
             shop_id: shop_id,
             orderDate : moment(),
@@ -87,7 +88,7 @@ exports.getOrders = async (req) => {
 
 exports.getOrderByIdUser = async function(req) {
 	try {
-		const orderByIdUser = await db.sequelize.query(`SELECT status, user_id, orderDate, requiredDate, shippedDate,order_id,(SELECT SUM(priceEach * quantity) FROM orderdetail WHERE o.order_id = orderdetail.order_id) AS 'total' FROM shopshop.order o 
+		const orderByIdUser = await db.sequelize.query(`SELECT status, user_id, orderDate, requiredDate,receivedDate ,shippedDate,order_id,(SELECT SUM(priceEach * quantity) FROM orderdetail WHERE o.order_id = orderdetail.order_id) AS 'total' FROM shopshop.order o 
 			WHERE user_id = ${req.params.user_id}`,{
 			type: db.sequelize.QueryTypes.SELECT
 		});
@@ -122,7 +123,7 @@ exports.getRecentOrderByShopId = async function (req){
 
 exports.getOrderByShopId = async function(req){
 	try{
-		const orderByShopId = await db.sequelize.query(`SELECT status, orderDate, requiredDate, shippedDate,order_id,(SELECT SUM(priceEach * quantity) FROM orderdetail WHERE o.order_id = orderdetail.order_id) AS 'total' FROM shopshop.order o 
+		const orderByShopId = await db.sequelize.query(`SELECT status, orderDate, requiredDate,receivedDate ,shippedDate,order_id,(SELECT SUM(priceEach * quantity) FROM orderdetail WHERE o.order_id = orderdetail.order_id) AS 'total' FROM shopshop.order o 
 			WHERE shop_id = ${req.params.shop_id}`,{
 			type: db.sequelize.QueryTypes.SELECT
 		});
@@ -152,8 +153,15 @@ exports.changeStatusOrder = async function(req){
 		const orderByShopId = await Order.findOne({where :{
 			order_id : req.params.order_id
 		}});
-		if (orderByShopId) {
+		if (orderByShopId && req.body.status === 'shipped') {
 			orderByShopId.status = req.body.status;
+			orderByShopId.shippedDate = moment();
+			const orders = await orderByShopId.save();
+			return orders.dataValues;
+		}
+		if (orderByShopId && req.body.status === 'received') {
+			orderByShopId.status = req.body.status;
+			orderByShopId.receivedDate = moment();
 			const orders = await orderByShopId.save();
 			return orders.dataValues;
 		}

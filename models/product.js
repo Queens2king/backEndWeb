@@ -36,7 +36,8 @@ module.exports = (sequelize,DataTypes) => {
       },
       product_rating: {
         type: Sequelize.DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
+        defaultValue: 4
       },
       product_description: {
         type: Sequelize.DataTypes.STRING,

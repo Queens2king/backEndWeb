@@ -32,6 +32,9 @@ module.exports = (sequelize,DataTypes) => {
       orderDate: {
         type: Sequelize.DataTypes.DATE,
       },
+      receivedDate: {
+        type: Sequelize.DataTypes.DATE,
+      },
       requiredDate: {
         type: Sequelize.DataTypes.DATE,
       },
@@ -44,6 +47,10 @@ module.exports = (sequelize,DataTypes) => {
       },
       comment: {
         type: Sequelize.DataTypes.TEXT,
+        allowNull: false
+      },
+      phonenumber: {
+        type: Sequelize.DataTypes.STRING,
         allowNull: false
       },
       createdAt: DataTypes.DATE,
