@@ -122,7 +122,7 @@ exports.getRecentOrderByShopId = async function (req){
 
 exports.getOrderByShopId = async function(req){
 	try{
-		const orderByShopId = await db.sequelize.query(`SELECT status, orderDate, requiredDate, shippedDate,order_id,(SELECT SUM(priceEach * quantity) FROM orderdetail WHERE o.order_id = orderdetail.order_id) AS 'total' FROM shopshop.order o 
+		const orderByShopId = await db.sequelize.query(`SELECT status, orderDate, requiredDate, shippedDate,order_id,us.*,(SELECT SUM(priceEach * quantity) FROM orderdetail WHERE o.order_id = orderdetail.order_id) AS 'total' FROM shopshop.order o inner join shopshop.user us on us.user_id = o.user_id
 			WHERE shop_id = ${req.params.shop_id}`,{
 			type: db.sequelize.QueryTypes.SELECT
 		});
