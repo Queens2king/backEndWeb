@@ -88,8 +88,10 @@ exports.getOrders = async (req) => {
 
 exports.getOrderByIdUser = async function(req) {
 	try {
-		const orderByIdUser = await db.sequelize.query(`SELECT status, user_id, orderDate, requiredDate,receivedDate ,shippedDate,order_id,(SELECT SUM(priceEach * quantity) FROM orderdetail WHERE o.order_id = orderdetail.order_id) AS 'total' FROM shopshop.order o 
-			WHERE user_id = ${req.params.user_id}`,{
+		const orderByIdUser = await db.sequelize.query(`SELECT shop.name, status, user_id, orderDate, requiredDate,receivedDate ,shippedDate,order_id,(SELECT SUM(priceEach * quantity) FROM orderdetail WHERE o.order_id = orderdetail.order_id) AS 'total' 
+		FROM shopshop.order o join shop 
+		on o.shop_id = shop.shop_id
+		WHERE user_id = ${req.params.user_id} `,{
 			type: db.sequelize.QueryTypes.SELECT
 		});
 		return orderByIdUser;
@@ -123,8 +125,9 @@ exports.getRecentOrderByShopId = async function (req){
 
 exports.getOrderByShopId = async function(req){
 	try{
-		const orderByShopId = await db.sequelize.query(`SELECT status, orderDate, requiredDate,receivedDate ,shippedDate,order_id,(SELECT SUM(priceEach * quantity) FROM orderdetail WHERE o.order_id = orderdetail.order_id) AS 'total' FROM shopshop.order o 
-			WHERE shop_id = ${req.params.shop_id}`,{
+		const orderByShopId = await db.sequelize.query(`SELECT status, comment,orderDate, o.phonenumber as 'phone_number', requiredDate,receivedDate ,shippedDate,order_id, us.*,(SELECT SUM(priceEach * quantity) FROM orderdetail WHERE o.order_id = orderdetail.order_id) AS 'total' FROM shopshop.order o 
+		inner join shopshop.user us on us.user_id = o.user_id 	
+		WHERE shop_id = ${req.params.shop_id}`,{
 			type: db.sequelize.QueryTypes.SELECT
 		});
 		return orderByShopId;
