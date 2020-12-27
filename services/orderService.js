@@ -140,7 +140,20 @@ exports.getOrderByShopId = async function(req){
 exports.changeStatusOrder = async function(req){
 	try{
 		if(req.body.status === 'deleted')
-		{
+		{	// tìm các product trong order => update nosale
+			const deletedOrDetails = await OrderDetail.findAll({
+				where: {
+					order_id : req.params.order_id
+				}
+			});
+			const updatedProducts = Promise.all(
+				deletedOrDetails.map(async(deletedOrDetail) => {
+					const updatedProduct = await Product.findByPk(deletedOrDetail.dataValues.product_id);
+					updatedProduct.nosale = updatedProduct.nosale - deletedOrDetail.dataValues.quantity;
+					updatedProduct.quantityInStock = updatedProduct.quantityInStock + deletedOrDetail.dataValues.quantity;
+					return updatedProduct.save();
+				})
+			);
 			const deletedOrder = await Order.destroy({
 				where :{
 					order_id : req.params.order_id
